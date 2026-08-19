@@ -48,9 +48,9 @@ const initialBankData = [
 ];
 
 const chartData = [
-  { name: '1 Окт', score: 65 }, { name: '5 Окт', score: 68 }, { name: '10 Окт', score: 72 },
-  { name: '15 Окт', score: 70 }, { name: '20 Окт', score: 75 }, { name: '25 Окт', score: 82 },
-  { name: '30 Окт', score: 78 },
+  { name: '1 Авг', score: 65 }, { name: '5 Авг', score: 68 }, { name: '10 Авг', score: 72 },
+  { name: '15 Авг', score: 70 }, { name: '20 Авг', score: 75 }, { name: '25 Авг', score: 82 },
+  { name: '30 Авг', score: 78 },
 ];
 
 const COLORS = ['#4f46e5', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
@@ -2517,25 +2517,25 @@ function App() {
       questions: mockCount20
     },
     { 
-      id: 1, title: "Квадрат теңдеулер", classLabel: "8 сынып", topic: "Алгебра", questionsCount: 15, takes: 27, avgScore: "82%", status: "Белсенді", date: "12.10.2023",
+      id: 1, title: "Квадрат теңдеулер", classLabel: "8 сынып", topic: "Алгебра", questionsCount: 15, takes: 27, avgScore: "82%", status: "Белсенді", date: "12.08.2026",
       questions: mockQuadEq
     },
     { 
-      id: 2, title: "Сызықтық функциялар", classLabel: "7 сынып", topic: "Алгебра", questionsCount: 2, takes: 31, avgScore: "76%", status: "Белсенді", date: "10.10.2023", 
+      id: 2, title: "Сызықтық функциялар", classLabel: "7 сынып", topic: "Алгебра", questionsCount: 2, takes: 31, avgScore: "76%", status: "Белсенді", date: "10.08.2026", 
       questions: [
         { text: "Түзудің бұрыштық коэффициентін табыңыз y = 3x - 5", options: ["A) -5", "B) 3", "C) 5", "D) 0"], correctIndex: 1 },
         { text: "Функциялардың қайсысы сызықтық?", options: ["A) y = x² + 1", "B) y = 2/x", "C) y = 4x + 7", "D) y = √x"], correctIndex: 2 }
       ] 
     },
     { 
-      id: 3, title: "Пайыз", classLabel: "6 сынып", topic: "Алгебра", questionsCount: 2, takes: 24, avgScore: "89%", status: "Аяқталды", date: "05.10.2023", 
+      id: 3, title: "Пайыз", classLabel: "6 сынып", topic: "Алгебра", questionsCount: 2, takes: 24, avgScore: "89%", status: "Аяқталды", date: "05.08.2026", 
       questions: [
         { text: "150 санының 20%-ын табыңыз", options: ["A) 20", "B) 30", "C) 15", "D) 40"], correctIndex: 1 },
         { text: "Тауар 2000 тг тұрды, оның бағасы 10%-ға төмендеді. Жаңа бағасы қандай?", options: ["A) 1900 тг", "B) 1800 тг", "C) 2100 тг", "D) 1990 тг"], correctIndex: 1 }
       ] 
     },
     { 
-      id: 4, title: "Пифагор теоремасы", classLabel: "8 сынып", topic: "Геометрия", questionsCount: 2, takes: 0, avgScore: "-", status: "Қаралама", date: "15.10.2023", 
+      id: 4, title: "Пифагор теоремасы", classLabel: "8 сынып", topic: "Геометрия", questionsCount: 2, takes: 0, avgScore: "-", status: "Қаралама", date: "15.08.2026", 
       questions: [
         { text: "Катеттері 3 және 4 болатын тікбұрышты үшбұрыштың гипотенузасын табыңыз", options: ["A) 5", "B) 7", "C) 25", "D) 12"], correctIndex: 0 },
         { text: "Катеті 5-ке, гипотенузасы 13-ке тең. Екінші катетті табыңыз.", options: ["A) 10", "B) 8", "C) 12", "D) 18"], correctIndex: 2 }

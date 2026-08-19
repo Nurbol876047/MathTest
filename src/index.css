@@ -293,5 +293,15 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .page-wrapper { padding: 24px 20px; }
   .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: 1fr; }
   .table-wrapper { overflow-x: auto; }
+  .search-bar { width: 100%; max-width: 180px; }
+  .topbar { padding: 0 16px; }
+  .topbar-actions { gap: 8px; }
+  .page-header { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+  .page-header > div { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .page-header > div:last-child { flex-direction: row; flex-wrap: wrap; }
 }
 .spinner { animation: spin 1s linear infinite; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.page-title { font-size: 1.875rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+.page-subtitle { font-size: 1rem; color: var(--text-muted); }
