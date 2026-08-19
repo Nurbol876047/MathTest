@@ -2568,6 +2568,11 @@ function App() {
              }
           }
         }
+        if (t.id >= 1 && t.id <= 4) {
+          t.date = "19.08.2026";
+        } else if (t.date && t.date.includes(".2023")) {
+          t.date = "19.08.2026";
+        }
         return t;
       });
     }
