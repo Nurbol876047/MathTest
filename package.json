@@ -1,0 +1,35 @@
+{
+  "name": "mathtest",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "cors": "^2.8.6",
+    "docx": "^9.7.1",
+    "dotenv": "^17.4.2",
+    "edge-tts-universal": "^1.4.0",
+    "express": "^5.2.1",
+    "file-saver": "^2.0.5",
+    "framer-motion": "^11.0.0",
+    "katex": "^0.18.4",
+    "lucide-react": "^0.344.0",
+    "multer": "^2.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-katex": "^3.1.0",
+    "recharts": "^2.12.2",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.2.0"
+  }
+}
