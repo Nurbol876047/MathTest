@@ -213,8 +213,8 @@ function DashboardView({ setActiveView }) {
                 <button className="tab-btn">3 ай</button>
               </div>
             </div>
-            <div className="card-body" style={{ height: '320px', display: 'flex' }}>
-              <div style={{ flex: 1 }}>
+            <div className="card-body line-chart-container">
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
@@ -225,7 +225,7 @@ function DashboardView({ setActiveView }) {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-              <div style={{ width: '140px', paddingLeft: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderLeft: '1px solid var(--border)', marginLeft: '16px' }}>
+              <div className="chart-stats-panel">
                 <div style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--success)' }}>+12,4%</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>алдыңғы кезеңмен салыстырғанда.</div>
               </div>
@@ -2094,16 +2094,18 @@ function TeacherAnalyticsView({ results = [] }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div className="card">
             <div className="card-header"><h2 className="card-title">Бағалардың үлестірімі</h2></div>
-            <div className="card-body" style={{ height: '300px', display: 'flex', alignItems: 'center' }}>
-              <ResponsiveContainer width="50%" height="100%">
-                <PieChart>
-                  <Pie data={pieData} innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value">
-                    {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <div style={{ flex: 1 }}>
+            <div className="card-body pie-chart-container">
+              <div className="pie-chart-wrapper">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value">
+                      {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="pie-legend-wrapper">
                 {pieData.map((item, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
