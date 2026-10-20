@@ -63,74 +63,71 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   </div>
 );
 
+function pickKazakhOrRussianVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  return (
+    voices.find(v => v.lang?.toLowerCase().startsWith('kk')) ||
+    voices.find(v => v.lang?.toLowerCase().startsWith('ru')) ||
+    voices[0] ||
+    null
+  );
+}
+
 function VoicePlayButton({ textToRead, autoPlay }) {
-  const [status, setStatus] = useState('idle'); // idle, loading, playing, paused
-  const [audioUrl, setAudioUrl] = useState(null);
-  const [audioObj, setAudioObj] = useState(null);
-  
+  const [status, setStatus] = useState('idle'); // idle, playing, paused
   const hasAutoPlayed = React.useRef(false);
-  
-  const handlePlayPause = async () => {
+
+  const speak = (text) => {
+    if (!('speechSynthesis' in window)) {
+      alert('Бұл браузер дауыспен оқуды қолдамайды.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voice = pickKazakhOrRussianVoice();
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || 'ru-RU';
+    utterance.rate = 0.95;
+    utterance.onend = () => setStatus('idle');
+    utterance.onerror = () => setStatus('idle');
+    window.speechSynthesis.speak(utterance);
+    setStatus('playing');
+  };
+
+  const handlePlayPause = () => {
+    if (!textToRead) return;
     if (status === 'playing') {
-      audioObj.pause();
+      window.speechSynthesis.pause();
       setStatus('paused');
       return;
     }
-    if (status === 'paused' && audioObj) {
-      audioObj.play();
+    if (status === 'paused') {
+      window.speechSynthesis.resume();
       setStatus('playing');
       return;
     }
-    
-    // need to generate
-    setStatus('loading');
-    try {
-      const res = await fetch('http://localhost:3001/api/text-to-speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: textToRead })
-      });
-      if (!res.ok) throw new Error('TTS failed');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setAudioUrl(url);
-      const audio = new Audio(url);
-      setAudioObj(audio);
-      
-      audio.onended = () => {
-        setStatus('idle');
-      };
-      
-      audio.play();
-      setStatus('playing');
-    } catch(e) {
-      console.error(e);
-      alert('Аудио генерациялау мүмкін болмады, кейінірек қайталап көріңіз.');
-      setStatus('idle');
-    }
+    speak(textToRead);
   };
 
   React.useEffect(() => {
     if (autoPlay && textToRead && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      handlePlayPause();
+      speak(textToRead);
     }
   }, [autoPlay, textToRead]);
 
   React.useEffect(() => {
     return () => {
-      if (audioObj) {
-        audioObj.pause();
-        audioObj.currentTime = 0;
-      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
-  }, [audioObj]);
+  }, []);
 
   return (
-    <button 
+    <button
       onClick={handlePlayPause}
       title="Тыңдау"
-      style={{ 
+      style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         width: '36px', height: '36px', borderRadius: '50%', border: '1px solid var(--border)',
         background: status === 'playing' ? 'var(--primary-light)' : 'white',
@@ -138,7 +135,6 @@ function VoicePlayButton({ textToRead, autoPlay }) {
         flexShrink: 0
       }}
     >
-      {status === 'loading' && <RefreshCw size={18} className="spinner" />}
       {(status === 'idle' || status === 'paused') && <Volume2 size={18} />}
       {status === 'playing' && <Pause size={18} />}
     </button>
