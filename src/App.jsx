@@ -16,6 +16,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import KmjGenerationView from './KmjGenerationView';
 import KtjGenerationView from './KtjGenerationView';
 import MathBackground3D from './MathBackground3D';
+import { safeJsonParse } from './utils/safeJsonParse';
 
 const mathTopics = {
   "1 сынып": ["20-ға дейін санау", "Қосу және азайту", "Сандарды салыстыру"],
@@ -356,8 +357,7 @@ function CreateTestView({ setActiveView, testQuestions, setTestQuestions, onSave
 }`;
 
       const result = await model.generateContent(prompt);
-      let cleanedText = result.response.text().replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanedText);
+      const parsed = safeJsonParse(result.response.text());
       const questionsArray = parsed.questions || parsed || [];
       
       const mapped = questionsArray.map((q, i) => ({
@@ -672,8 +672,7 @@ ${questionText}
 
       const res = await model.generateContent(systemPrompt);
       const text = res.response.text();
-      let cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanedText);
+      const parsed = safeJsonParse(text);
       setResult(parsed);
     } catch (e) {
       console.error(e);
@@ -1056,8 +1055,7 @@ function TopicExplanationView({ setActiveView, setPreFillTopic, setPreFillClass 
 Егер пайдаланушы сұрағында басқа тілді көрсетпесе, жауапты қазақ тілінде бер.`;
       const res = await model.generateContent(systemPrompt);
       const text = res.response.text();
-      let cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanedText);
+      const parsed = safeJsonParse(text);
       
       if (parsed.is_math === false) {
         setErrorMsg("Похоже, это не математическая тема, уточните запрос");
@@ -1379,11 +1377,8 @@ function AIGenerationView({ mode = "text", onSaveToBank, onSaveTest, onExplainQu
 }`;
 
       const result = await model.generateContent(systemPrompt);
-      const responseText = result.response.text();
-      
-      let cleanedText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanedText);
-      
+      const parsed = safeJsonParse(result.response.text());
+
       const questionsArray = parsed.questions ? parsed.questions : (Array.isArray(parsed) ? parsed : []);
       const mappedQuestions = questionsArray.map(q => {
         let idx = 0;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, CheckCircle2, RefreshCw, Calendar, ArrowLeft, Wand2, PlusCircle, BookOpen, Search, Download, Edit2 } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { safeJsonParse } from './utils/safeJsonParse';
 import { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -64,9 +65,7 @@ export default function KtjGenerationView({ setActiveView, onSaveTest, setExplan
   ]
 }`;
       const result = await model.generateContent([prompt, filePart]);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
+      const parsed = safeJsonParse(result.response.text());
       if (parsed && parsed.lessons) {
         setLessons(parsed.lessons);
         setStep(2);
@@ -110,10 +109,8 @@ export default function KtjGenerationView({ setActiveView, onSaveTest, setExplan
   ]
 }`;
       const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
-      
+      const parsed = safeJsonParse(result.response.text());
+
       setBuiltKtjContext(parsed);
       setLessons(parsed.lessons);
       setStep(2);
@@ -208,10 +205,8 @@ export default function KtjGenerationView({ setActiveView, onSaveTest, setExplan
   ]
 }`;
       const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
-      
+      const parsed = safeJsonParse(result.response.text());
+
       const standardQuestions = parsed.questions.map((q, idx) => ({
         id: 'ktj_q' + Date.now() + idx,
         type: (q.options && q.options.length >= 2) ? 'multiple_choice' : 'open',

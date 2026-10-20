@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, CheckCircle2, RefreshCw, Calendar, ArrowLeft, Wand2, PlusCircle, BookOpen } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { safeJsonParse } from './utils/safeJsonParse';
 
 // Convert file to base64
 async function fileToGenerativePart(file) {
@@ -75,10 +76,7 @@ export default function KmjGenerationView({ setActiveView, onSaveTest, setExplan
 }`;
       
       const result = await model.generateContent([prompt, filePart]);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      
-      const parsed = JSON.parse(cleaned);
+      const parsed = safeJsonParse(result.response.text());
       if (parsed && parsed.lessons && parsed.lessons.length > 0) {
         setLessons(parsed.lessons);
         setStep(2);
@@ -142,10 +140,8 @@ export default function KmjGenerationView({ setActiveView, onSaveTest, setExplan
 Барлық мәтіндерді қазақ тілінде қайтар.`;
 
       const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
-      
+      const parsed = safeJsonParse(result.response.text());
+
       setBuiltKmj(parsed);
       
       // Also pre-fill for test generation
@@ -226,10 +222,8 @@ export default function KmjGenerationView({ setActiveView, onSaveTest, setExplan
 Егер пайдаланушы сұрағында басқа тілді көрсетпесе, барлық мәтіндерді қазақ тілінде бер.`;
       
       const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleaned);
-      
+      const parsed = safeJsonParse(result.response.text());
+
       // format to standard questions
       const standardQuestions = parsed.questions.map((q, idx) => {
         let qType = 'multiple_choice';
