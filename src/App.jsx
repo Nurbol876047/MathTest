@@ -56,12 +56,20 @@ const chartData = [
 
 const COLORS = ['#4f46e5', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
 
-const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
-  <div className={`nav-item ${active ? 'active' : ''}`} onClick={onClick}>
-    <Icon size={18} />
-    <span>{label}</span>
-  </div>
-);
+const SidebarItem = ({ icon: Icon, label, active, onClick, voiceKey }) => {
+  const handleClick = () => {
+    if (voiceKey) {
+      new Audio(`/audio/sidebar/${voiceKey}.mp3`).play().catch(() => {});
+    }
+    onClick();
+  };
+  return (
+    <div className={`nav-item ${active ? 'active' : ''}`} onClick={handleClick}>
+      <Icon size={18} />
+      <span>{label}</span>
+    </div>
+  );
+};
 
 function pickKazakhOrRussianVoice() {
   if (!('speechSynthesis' in window)) return null;
@@ -2651,22 +2659,22 @@ function App() {
         <nav className="sidebar-nav">
           <div className="nav-section">
             <div className="nav-section-title">Негізгі</div>
-            <SidebarItem icon={LayoutDashboard} label="Басты тақта" active={activeTab === 'dashboard'} onClick={() => handleTabClick('dashboard')} />
-            <SidebarItem icon={FileText} label="Менің тесттерім" active={activeTab === 'tests'} onClick={() => handleTabClick('tests')} />
-            <SidebarItem icon={Library} label="Тапсырмалар банкі" active={activeTab === 'bank'} onClick={() => handleTabClick('bank')} />
-            <SidebarItem icon={BarChart3} label="Аналитика" active={activeTab === 'analytics'} onClick={() => handleTabClick('analytics')} />
+            <SidebarItem icon={LayoutDashboard} label="Басты тақта" voiceKey="dashboard" active={activeTab === 'dashboard'} onClick={() => handleTabClick('dashboard')} />
+            <SidebarItem icon={FileText} label="Менің тесттерім" voiceKey="tests" active={activeTab === 'tests'} onClick={() => handleTabClick('tests')} />
+            <SidebarItem icon={Library} label="Тапсырмалар банкі" voiceKey="bank" active={activeTab === 'bank'} onClick={() => handleTabClick('bank')} />
+            <SidebarItem icon={BarChart3} label="Аналитика" voiceKey="analytics" active={activeTab === 'analytics'} onClick={() => handleTabClick('analytics')} />
           </div>
           <div className="nav-section">
             <div className="nav-section-title">Жоспарлау</div>
-            <SidebarItem icon={Calendar} label="КТЖ" active={activeTab === 'ai-ktj'} onClick={() => handleTabClick('ai-ktj')} />
-            <SidebarItem icon={FileText} label="КМЖ" active={activeTab === 'ai-kmj'} onClick={() => handleTabClick('ai-kmj')} />
+            <SidebarItem icon={Calendar} label="КТЖ" voiceKey="ai-ktj" active={activeTab === 'ai-ktj'} onClick={() => handleTabClick('ai-ktj')} />
+            <SidebarItem icon={FileText} label="КМЖ" voiceKey="ai-kmj" active={activeTab === 'ai-kmj'} onClick={() => handleTabClick('ai-kmj')} />
           </div>
           <div className="nav-section">
             <div className="nav-section-title">Құру</div>
-            <SidebarItem icon={PlusCircle} label="Тест жасау" active={activeTab === 'create'} onClick={() => handleTabClick('create')} />
-            <SidebarItem icon={BookOpen} label="Тақырыпты түсіндіру" active={activeTab === 'topic-explain'} onClick={() => handleTabClick('topic-explain')} />
-            <SidebarItem icon={Wand2} label="Мәтін бойынша (AI)" active={activeTab === 'ai-text'} onClick={() => handleTabClick('ai-text')} />
-            <SidebarItem icon={Camera} label="Фото бойынша (AI)" active={activeTab === 'ai-photo'} onClick={() => handleTabClick('ai-photo')} />
+            <SidebarItem icon={PlusCircle} label="Тест жасау" voiceKey="create" active={activeTab === 'create'} onClick={() => handleTabClick('create')} />
+            <SidebarItem icon={BookOpen} label="Тақырыпты түсіндіру" voiceKey="topic-explain" active={activeTab === 'topic-explain'} onClick={() => handleTabClick('topic-explain')} />
+            <SidebarItem icon={Wand2} label="Мәтін бойынша (AI)" voiceKey="ai-text" active={activeTab === 'ai-text'} onClick={() => handleTabClick('ai-text')} />
+            <SidebarItem icon={Camera} label="Фото бойынша (AI)" voiceKey="ai-photo" active={activeTab === 'ai-photo'} onClick={() => handleTabClick('ai-photo')} />
           </div>
         </nav>
       </aside>
