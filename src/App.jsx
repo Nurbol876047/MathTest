@@ -83,12 +83,15 @@ function pickKazakhOrRussianVoice() {
 }
 
 function VoicePlayButton({ textToRead, autoPlay }) {
-  const [status, setStatus] = useState('idle'); // idle, playing, paused
+  const [status, setStatus] = useState('idle'); // idle, loading, playing, paused
   const hasAutoPlayed = React.useRef(false);
+  const audioRef = React.useRef(null);
+  const modeRef = React.useRef(null); // 'audio' (нағыз қазақша дауыс) немесе 'speech' (браузер)
 
-  const speak = (text) => {
+  const speakWithBrowser = (text) => {
     if (!('speechSynthesis' in window)) {
       alert('Бұл браузер дауыспен оқуды қолдамайды.');
+      setStatus('idle');
       return;
     }
     window.speechSynthesis.cancel();
@@ -99,19 +102,54 @@ function VoicePlayButton({ textToRead, autoPlay }) {
     utterance.rate = 0.95;
     utterance.onend = () => setStatus('idle');
     utterance.onerror = () => setStatus('idle');
+    modeRef.current = 'speech';
     window.speechSynthesis.speak(utterance);
     setStatus('playing');
   };
 
+  const speak = async (text) => {
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/text-to-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+        signal: AbortSignal.timeout(6000),
+      });
+      if (!res.ok) throw new Error('TTS request failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      modeRef.current = 'audio';
+      audio.onended = () => setStatus('idle');
+      audio.onerror = () => speakWithBrowser(text);
+      await audio.play();
+      setStatus('playing');
+    } catch (e) {
+      // Бэкендегі нағыз қазақша дауыс қолжетімсіз (деплойда backend жоқ немесе timeout) —
+      // браузердің кірістірілген дауысына ауысамыз.
+      speakWithBrowser(text);
+    }
+  };
+
   const handlePlayPause = () => {
-    if (!textToRead) return;
+    if (!textToRead || status === 'loading') return;
     if (status === 'playing') {
-      window.speechSynthesis.pause();
+      if (modeRef.current === 'audio' && audioRef.current) {
+        audioRef.current.pause();
+      } else {
+        window.speechSynthesis.pause();
+      }
       setStatus('paused');
       return;
     }
     if (status === 'paused') {
-      window.speechSynthesis.resume();
+      if (modeRef.current === 'audio' && audioRef.current) {
+        audioRef.current.play();
+      } else {
+        window.speechSynthesis.resume();
+      }
       setStatus('playing');
       return;
     }
@@ -127,6 +165,7 @@ function VoicePlayButton({ textToRead, autoPlay }) {
 
   React.useEffect(() => {
     return () => {
+      if (audioRef.current) audioRef.current.pause();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
   }, []);
@@ -143,6 +182,7 @@ function VoicePlayButton({ textToRead, autoPlay }) {
         flexShrink: 0
       }}
     >
+      {status === 'loading' && <RefreshCw size={18} className="spinner" />}
       {(status === 'idle' || status === 'paused') && <Volume2 size={18} />}
       {status === 'playing' && <Pause size={18} />}
     </button>
